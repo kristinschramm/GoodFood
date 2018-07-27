@@ -1,22 +1,45 @@
 ﻿@using Microsoft.AspNet.Identity
+
+
+
 @if (Request.IsAuthenticated)
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
-    @Html.AntiForgeryToken()
+        @Html.AntiForgeryToken()
+        <div id="profileNav" class="sidenav">
 
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
-        </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-    </ul>
+
+            <a href="javascript:void(0)" class="closebtn" onclick="closeProfile()">&times;</a>
+            <a class="nav-link" style="color:white"> @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" }) </a>
+            <a class="nav-link" style="color:white" href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+
+        </div>
     }
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-    </ul>
+    <div id="profileNav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeProfile()">&times;</a>
+        <a class="nav-link">@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" }) </a>
+        <a class="nav-link">@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</a>
+    </div>
 }
+
+
+<script>
+    function openProfile() {
+        document.getElementById("profileNav").style.width = "20em";
+        document.getElementById("main").style.marginRight = "12em";
+    }
+
+
+    function closeProfile()
+    {
+        document.getElementById("profileNav").style.width = "0";
+        document.getElementById("main").style.marginRight = "0";
+    }
+    </script>
+
+
+

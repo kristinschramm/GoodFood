@@ -79,6 +79,14 @@ namespace GoodFoodMKE.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [Display(Name = "First Name")]
+        public string NameFirst { get; set; }
+        [Required]
+        [Display(Name = "Last Name")]
+        public string NameLast { get; set; }
+
     }
 
     public class ResetPasswordViewModel

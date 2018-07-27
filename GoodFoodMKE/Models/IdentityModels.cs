@@ -22,11 +22,10 @@ namespace GoodFoodMKE.Models
     {
         public DbSet<Address> Addresses {get; set;}
         public DbSet<Farm> Farms{get; set;}
-        public DbSet<Location> Locations{get; set;}
-        public DbSet<LocationType> LocationTypes{get; set;}
         public DbSet<Market> Markets{get; set;}
         public DbSet<Product> Products{get; set;}
         public DbSet<ProductType> ProductType{get; set;}
+        public DbSet<AppUser> AppUsers { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

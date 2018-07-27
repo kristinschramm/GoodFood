@@ -3,37 +3,66 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title </title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
 </head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+<body id="main">
+    <div class="container fixed-top" >
+        <nav class="navbar navbar-fixed-top navbar-expand-lg navbar-light bg-light" style="width: 100%; padding-top: 0rem">
+            <input type="image" src="~/Image/logo.png" style="height: 6rem" />
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarColor03">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-link active">
+                        <a class="nav-link"> @Html.ActionLink("Home", "Index", "Home") </a>
+                    </li>
+                    <li class="nav-link">
+                        <a class="nav-link">@Html.ActionLink("Markets", "Index", "Markets")</a>
+                    </li>
+                    <li class="nav-link">
+                        <a class="nav-link">@Html.ActionLink("Farmers", "Index", "Farms")</a>
+                    </li>
+                    <li class="nav-link">
+                        <a class="nav-link">@Html.ActionLink("Blogs", "Index", "Blog")</a>
+                    </li>
                 </ul>
-                @Html.Partial("_LoginPartial")
             </div>
-        </div>
+            <div class="nav navar-fixed-top navbar-nav navbar-right col-5">
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search">
+                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                </form>
+
+                <a class="nav-link">
+                    <i class="material-icons" onclick="openProfile()">account_box</i>
+                </a>
+                <a class="nav-link">
+                    <i class="material-icons" onclick="openEvent()">events</i>
+                </a>
+
+                @Html.Partial("_LoginPartial")
+                @Html.Partial("_EventPartial")
+
+            </div>
+        </nav>
+        
+
+        
     </div>
-    <div class="container body-content">
+
+    <div class="container body-content" style="margin-top:3.5rem">
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year -GoodFoodMKE</p>
         </footer>
     </div>
 
@@ -42,3 +71,5 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+
+

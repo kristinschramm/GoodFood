@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Text;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -17,9 +19,11 @@ namespace GoodFoodMKE.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext _context;
 
         public AccountController()
         {
+            _context = new ApplicationDbContext();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -153,8 +157,30 @@ namespace GoodFoodMKE.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
+                 
                 if (result.Succeeded)
                 {
+                    result = await UserManager.AddToRoleAsync(user.Id, RoleName.Member);
+                }
+                if (result.Succeeded)
+                {
+
+
+                    var appUser = new AppUser()
+                    {
+                        EmailAddress = model.Email.ToString().ToLower().Trim(' '),
+                        Id = user.Id,
+                        NameFirst = model.NameFirst,
+                        NameLast = model.NameLast,
+                        
+                    };
+                    using (MD5 md5Hash = MD5.Create())
+                    {
+                        string hash = GetMd5Hash(md5Hash, appUser.EmailAddress);
+                        appUser.GravatarEmailHash = hash;
+                    }
+                    _context.AppUsers.Add(appUser);
+                    _context.SaveChanges();
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
@@ -421,6 +447,17 @@ namespace GoodFoodMKE.Controllers
             }
 
             base.Dispose(disposing);
+        }
+
+        static string GetMd5Hash(MD5 md5Hash, string input)
+        {
+            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i =0; i <data.Length; i++)
+            {
+                stringBuilder.Append(data[i].ToString("x2"));
+            }
+            return stringBuilder.ToString();
         }
 
         #region Helpers

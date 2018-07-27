@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNet.Identity
+
+
+
+        <div id="eventNav" class="sidenav">
+
+
+            <a href="javascript:void(0)" class="closebtn" onclick="closeEvent()">&times;</a>
+            <a class="nav-link" style="color:white"> This is an event! </a>
+            <a class="nav-link" style="color:white"> This is an event too! </a>
+
+        </div>
+ 
+<script>
+    function openEvent() {
+        document.getElementById("eventNav").style.width = "250px";
+        document.getElementById("main").style.marginRight = "250px";
+    }
+
+
+    function closeEvent()
+    {
+        document.getElementById("eventNav").style.width = "0";
+        document.getElementById("main").style.marginRight = "0";
+    }
+</script>
+
+
+
+

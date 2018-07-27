@@ -7,8 +7,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GoodFoodMKE.Models
 {
-    public class Farm :Location
+    public class Farm 
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int LocationId { get; set; }
+         public int AddressId { get; set; }
+        public Address Address { get; set; }
         public List<Product> Products { get; set; }
         
     }

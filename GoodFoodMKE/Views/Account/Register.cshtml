@@ -1,41 +1,66 @@
 ﻿@model GoodFoodMKE.Models.RegisterViewModel
 @{
-    ViewBag.Title = "Register";
+    ViewBag.Title = "Become a New Community Member";
 }
 
-<h2>@ViewBag.Title.</h2>
+<h2 style="text-align:center">@ViewBag.Title</h2>
+<h4>Create a new account.</h4>
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    <h4>Create a new account.</h4>
-    <hr />
-    @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Register" />
-        </div>
-    </div>
-}
+<div class="row">
+    <div class="col-lg-4">
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                @Html.LabelFor(m => m.NameFirst, new { @class = "col-md-8 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.NameFirst, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.NameLast, new { @class = "col-md-8 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.NameLast, new { @class = "form-control" })
+                </div>
+            </div>
 
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-8 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password, new { @class = "col-md-8 control-label" })
+                <div class="col-md-12">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-8 control-label" })
+                <div class="col-md-12">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                </div>
+            </div>
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" class="btn btn-default" value="Register" />
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-8">
+        <div>
+            <img src="~/Image/register.jpg" style="height: 18em; display:block; margin-left:auto; margin-right:auto; border: .5em solid #367700" />
+        </div>
+        <hr/>
+        <p>GoodFoodMKE utilizes Gravatar for our profile photos.</p>
+        <p>What's a Gravatar? A Gravatar is a Globally Recognized Avatar. You upload it and create your profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image will automatically follow you there. Click to find out more and create a Gravatar account.</p>
+        <a href="https://en.gravatar.com/" target="_blank"><img src="~/Image/gravatar.png" style="height:3em;  display:block; margin-left:auto; margin-right:auto;" /></a>
+    </div>
+</div>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
