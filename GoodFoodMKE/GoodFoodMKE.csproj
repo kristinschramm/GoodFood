@@ -197,10 +197,8 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AppUsersController.cs" />
-    <Compile Include="Controllers\FarmsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\MarketsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -208,6 +206,14 @@
     <Compile Include="Migrations\201807261659587_initial migration.cs" />
     <Compile Include="Migrations\201807261659587_initial migration.Designer.cs">
       <DependentUpon>201807261659587_initial migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807301509063_update farmer table model.cs" />
+    <Compile Include="Migrations\201807301509063_update farmer table model.Designer.cs">
+      <DependentUpon>201807301509063_update farmer table model.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807301514439_updateMarket.cs" />
+    <Compile Include="Migrations\201807301514439_updateMarket.Designer.cs">
+      <DependentUpon>201807301514439_updateMarket.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -292,22 +298,12 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_NavBar.cshtml" />
-    <Content Include="Views\Markets\Index.cshtml" />
     <Content Include="Views\Shared\_EventPartial.cshtml" />
-    <Content Include="Views\Markets\Create.cshtml" />
-    <Content Include="Views\Markets\Delete.cshtml" />
-    <Content Include="Views\Markets\Details.cshtml" />
-    <Content Include="Views\Markets\Edit.cshtml" />
     <Content Include="Views\Locations\Create.cshtml" />
     <Content Include="Views\Locations\Delete.cshtml" />
     <Content Include="Views\Locations\Details.cshtml" />
     <Content Include="Views\Locations\Edit.cshtml" />
     <Content Include="Views\Locations\Index.cshtml" />
-    <Content Include="Views\Farms\Create.cshtml" />
-    <Content Include="Views\Farms\Delete.cshtml" />
-    <Content Include="Views\Farms\Details.cshtml" />
-    <Content Include="Views\Farms\Edit.cshtml" />
-    <Content Include="Views\Farms\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -329,6 +325,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201807261659587_initial migration.resx">
       <DependentUpon>201807261659587_initial migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807301509063_update farmer table model.resx">
+      <DependentUpon>201807301509063_update farmer table model.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807301514439_updateMarket.resx">
+      <DependentUpon>201807301514439_updateMarket.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
