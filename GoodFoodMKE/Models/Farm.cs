@@ -18,6 +18,7 @@ namespace GoodFoodMKE.Models
         public string WebAddress { get; set; }
         public List<Product> Products { get; set; }
         public List<AppUser> AccountManager { get; set; } 
+        public bool Active { get; set; }
         
     }
 }

@@ -1,0 +1,13 @@
+﻿@model GoodFoodMKE.Models.ViewModels.CreateFarmViewModel
+@{
+    ViewBag.Title = "Create a Farm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm("Create", "Farm", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.RequestorId)
+    
+}

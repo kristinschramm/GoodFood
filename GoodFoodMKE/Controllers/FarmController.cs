@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using GoodFoodMKE.Models;
 using GoodFoodMKE.Models.ViewModels;
+using Microsoft.AspNet.Identity;
 
 namespace GoodFoodMKE.Controllers
 {
@@ -31,8 +32,23 @@ namespace GoodFoodMKE.Controllers
                 };
                 viewModels.Add(viewModel);
             }
-            
+
             return View(viewModels);
         }
+
+        //CREATE: Farm
+        [Authorize]
+        public ActionResult Create()
+        {
+            var viewModel = new CreateFarmViewModel()
+            {
+                AppUsers = _context.AppUsers.ToList(),
+                RequestorId = User.Identity.GetUserId(),
+                Products = _context.Products.ToList()
+
+            };
+
+            return View(viewModel);
+                }
     }
 }
