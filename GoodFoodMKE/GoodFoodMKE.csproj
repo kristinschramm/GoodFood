@@ -197,6 +197,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AppUsersController.cs" />
+    <Compile Include="Controllers\FarmController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
@@ -214,6 +215,10 @@
     <Compile Include="Migrations\201807301514439_updateMarket.cs" />
     <Compile Include="Migrations\201807301514439_updateMarket.Designer.cs">
       <DependentUpon>201807301514439_updateMarket.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807301556337_addWebAddressField.cs" />
+    <Compile Include="Migrations\201807301556337_addWebAddressField.Designer.cs">
+      <DependentUpon>201807301556337_addWebAddressField.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -304,6 +309,7 @@
     <Content Include="Views\Locations\Details.cshtml" />
     <Content Include="Views\Locations\Edit.cshtml" />
     <Content Include="Views\Locations\Index.cshtml" />
+    <Content Include="Views\Farm\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -331,6 +337,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807301514439_updateMarket.resx">
       <DependentUpon>201807301514439_updateMarket.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807301556337_addWebAddressField.resx">
+      <DependentUpon>201807301556337_addWebAddressField.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

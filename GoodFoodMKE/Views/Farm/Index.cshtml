@@ -1,0 +1,48 @@
+﻿@model IEnumerable<GoodFoodMKE.Models.ViewModels.FarmViewModel>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<table id="farms" class="table table-bordered table-hover table-responsive">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Phone Number</th>
+            <th>Website</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var f in Model)
+        {
+            <tr>
+                <td>@Html.ActionLink(f.Farm.Name, "Details", "Location", new { id = f.Farm.Id }, null)</td>
+                <td>@f.Farm.Address.AddressString</td>
+                <td>@f.Farm.WebAddress</td>
+                
+
+
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Location", new { id = f.Farm.Id }, new { @class = "btn btn-default" })
+                    @Html.ActionLink("Details", "Details", "Location", new { id = f.Farm.Id }, new { @class = "btn btn-default" })
+
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section scripts
+    {
+    <script>
+                $(document).ready(function () {
+                    $("#locations").DataTable();
+                })
+    </script>
+}
