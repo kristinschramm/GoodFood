@@ -1,0 +1,64 @@
+﻿<script type="text/javascript" src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Index.js"></script>
+@model CreateMarketViewModel
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Create a Market";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm("Create", "Market", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+
+    <p> Use this form to apply for a Farmer Account, site admin will then verify information and approve or deny request. </p>
+
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.RequestorId)
+
+    <div class="form-group" >
+        @Html.LabelFor(m => m.Farm.Name, new { @class = "col-md-2 control-label" }) 
+        <div class="col-md-8">
+            @Html.TextAreaFor(m => m.Farm.Name, new { @class = "form-control", id= "farmName" })
+        </div>
+        @Html.LabelFor(m => m.Farm.Address.AddressString, new { @class = "col-md-2 control-label" })
+        <div class="col-md-8">
+            @Html.TextAreaFor(m => m.Farm.Address.AddressString, new { @class = "form-control" })
+        </div>
+        @Html.LabelFor(m => m.Farm.WebAddress, new { @class = "col-md-2 control-label" })
+        <div class="col-md-8">
+            @Html.TextAreaFor(m => m.Farm.WebAddress, new { @class = "form-control" })
+        </div>
+        @Html.Hidden("FileUploadUrl", Url.Action("UploadFiles", "Farm"))
+        <table>
+            <tr>
+                <td>
+                    <div id="uploadMsg"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>Profile Photo: </div>
+                    <div>
+                        <input type="file" id="fileOne" name="files[0]" />
+
+                    </div>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>
+                    <button type="button" id="btnUpload">UPLOAD FILE</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Submit" />
+        </div>
+    </div>
+
+
+}
+

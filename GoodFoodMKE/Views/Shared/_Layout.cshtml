@@ -8,6 +8,7 @@
           rel="stylesheet">
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @using Microsoft.AspNet.Identity
 
 </head>
 <body id="main">
@@ -28,7 +29,7 @@
                         <a class="nav-link">@Html.ActionLink("Markets", "Index", "Markets")</a>
                     </li>
                     <li class="nav-link">
-                        <a class="nav-link">@Html.ActionLink("Farms", "Index", "Farms")</a>
+                        <a class="nav-link">@Html.ActionLink("Farms", "Index", "Farm")</a>
                     </li>
                     <li class="nav-link">
                         <a class="nav-link">@Html.ActionLink("Blogs", "Index", "Blog")</a>

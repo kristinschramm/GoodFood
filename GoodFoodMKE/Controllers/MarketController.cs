@@ -1,36 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.IO;
 using GoodFoodMKE.Models;
 using GoodFoodMKE.Models.ViewModels;
 using Microsoft.AspNet.Identity;
+using System.Configuration;
 
 namespace GoodFoodMKE.Controllers
 {
-    public class FarmController : Controller
+    public class MarketController : Controller
     {
         private ApplicationDbContext _context;
-        public FarmController()
+        public MarketController()
         {
-            _context = new ApplicationDbContext();
+                _context = new ApplicationDbContext();
         }
         // GET: Farm
         public ActionResult Index()
         {
-            var viewModels = new List<FarmViewModel>();
+            var viewModels = new List<MarketViewModel>();
 
-            var farms = _context.Farms.OrderBy(f => f.Name).ToList();
+            var markets = _context.Markets.OrderBy(m => m.Name).ToList();
 
-            foreach (var farm in farms)
+            foreach (var market in markets)
             {
-                var viewModel = new FarmViewModel
+                var viewModel = new MarketViewModel
                 {
-                    Farm = farm,
-                    Markets = _context.Markets.ToList()
+                    Market = market,
+                    Farms = _context.Farms.ToList()
                 };
                 viewModels.Add(viewModel);
             }
@@ -38,24 +38,24 @@ namespace GoodFoodMKE.Controllers
             return View(viewModels);
         }
 
-        //CREATE: Farm
-        [Authorize]
-        public ActionResult Create()
+        //CREATE: Market
+    [Authorize]
+    public ActionResult Create()
+    {
+        var viewModel = new CreateMarketViewModel()
         {
-            var viewModel = new CreateFarmViewModel()
-            {
                 AppUsers = _context.AppUsers.ToList(),
                 RequestorId = User.Identity.GetUserId(),
-                Products = _context.Products.ToList()
+                Farms = _context.Farms.ToList()
 
-            };
+        };
 
-            return View(viewModel);
-                }
+        return View(viewModel);
+        }
 
         [Authorize]
         [HttpPost]
-        public ActionResult Create(CreateFarmViewModel model)
+        public ActionResult Create(CreateMarketViewModel model)
         {
             var userId = User.Identity.GetUserId();
             var appUser = _context.AppUsers.Single(a => a.Id == userId);
@@ -63,40 +63,40 @@ namespace GoodFoodMKE.Controllers
             {
                 model.AppUsers = _context.AppUsers.ToList();
                 model.RequestorId = User.Identity.GetUserId();
-                model.Products = _context.Products.ToList();
+                model.Farms = _context.Farms.ToList();
 
                 return View(model);
             }
             var newAddress = new Address()
             {
-                AddressString = model.Farm.Address.AddressString,
+                AddressString = model.Market.Address.AddressString,
             };
             _context.Addresses.Add(newAddress);
 
-            var newFarm = new Farm()
+            var newMarket = new Market()
             {
                 AccountManagers = _context.AppUsers.Where(m => m.Id == appUser.Id).ToList(),
                 Active = false,
                 Address = newAddress,
-                Name = model.Farm.Name,
-                WebAddress = model.Farm.WebAddress
+                Name = model.Market.Name,
+                WebAddress = model.Market.WebAddress
             };
-            _context.Farms.Add(newFarm);
+            _context.Markets.Add(newMarket);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Farm");
+            return RedirectToAction("Index", "Market");
         }
         [HttpPost]
         public ActionResult UploadFiles()
         {
             bool isSuccess = false;
             string serverMessage = string.Empty;
-            var fileOne = Request.Files[0] as HttpPostedFileBase;            
+            var fileOne = Request.Files[0] as HttpPostedFileBase;
             string uploadPath = ConfigurationManager.AppSettings["UPLOAD_PATH"].ToString();
             string newFileOne = Path.Combine(uploadPath, fileOne.FileName);
-            
+
             fileOne.SaveAs(newFileOne);
-            
+
 
             if (System.IO.File.Exists(newFileOne))
             {
@@ -112,3 +112,4 @@ namespace GoodFoodMKE.Controllers
         }
     }
 }
+

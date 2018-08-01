@@ -10,15 +10,17 @@ namespace GoodFoodMKE.Models
     public class Farm 
     {
         public int Id { get; set; }
+        [Display(Name="Farm Name")]
         public string Name { get; set; }
         [Display (Name="Street Address")]
         public int AddressId { get; set; }
         public Address Address { get; set; }
-        [Display (Name="Website")]
+        [Display (Name="Website Url")]
         public string WebAddress { get; set; }
         public List<Product> Products { get; set; }
-        public List<AppUser> AccountManager { get; set; } 
+        public List<AppUser> AccountManagers { get; set; } 
         public bool Active { get; set; }
+        public string LogoFilePath { get; set; }
         
     }
 }

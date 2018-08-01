@@ -10,6 +10,7 @@ namespace GoodFoodMKE.Models
     public class Address
     {
         public int Id { get; set; }
+        [Display(Name ="Street Address")]
         public string AddressString { get; set; }
     }
 }

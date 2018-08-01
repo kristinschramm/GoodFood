@@ -26,6 +26,8 @@ namespace GoodFoodMKE.Models
         public DbSet<Product> Products{get; set;}
         public DbSet<ProductType> ProductType{get; set;}
         public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<BlogEntry> BlogEntries { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
