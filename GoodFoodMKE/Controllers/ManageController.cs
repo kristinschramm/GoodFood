@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using GoodFoodMKE.Models;
+using GoodFoodMKE.Models.ViewModels;
 
 namespace GoodFoodMKE.Controllers
 {
@@ -18,6 +19,7 @@ namespace GoodFoodMKE.Controllers
 
         public ManageController()
         {
+           
         }
 
         public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)

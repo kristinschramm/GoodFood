@@ -1,35 +1,35 @@
 ﻿<script type="text/javascript" src="~/Scripts/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="~/Scripts/Index.js"></script>
-@model CreateFarmViewModel
+@model CreateMarketViewModel
 @using Microsoft.AspNet.Identity;
 @{
-    ViewBag.Title = "Create a Farm";
+    ViewBag.Title = "Create a Market";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>@ViewBag.Title</h2>
-@using (Html.BeginForm("Create", "Farm", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("Create", "Market", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
 
-    <p> Use this form to apply for a Farmer Account, site admin will then verify information and approve or deny request. </p>
+    <p> Use this form to apply for a Market Account, site admin will then verify information and approve or deny request. </p>
 
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.RequestorId)
 
     <div class="form-group" >
-        @Html.LabelFor(m => m.Farm.Name, new { @class = "col-md-2 control-label" }) 
+        @Html.LabelFor(m => m.Market.Name, new { @class = "col-md-2 control-label" }) 
         <div class="col-md-8">
-            @Html.TextAreaFor(m => m.Farm.Name, new { @class = "form-control", id= "farmName" })
+            @Html.TextAreaFor(m => m.Market.Name, new { @class = "form-control", id= "marketName" })
         </div>
-        @Html.LabelFor(m => m.Farm.Address.AddressString, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.Market.Address.AddressString, new { @class = "col-md-2 control-label" })
         <div class="col-md-8">
-            @Html.TextAreaFor(m => m.Farm.Address.AddressString, new { @class = "form-control" })
+            @Html.TextAreaFor(m => m.Market.Address.AddressString, new { @class = "form-control" })
         </div>
-        @Html.LabelFor(m => m.Farm.WebAddress, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.Market.WebAddress, new { @class = "col-md-2 control-label" })
         <div class="col-md-8">
-            @Html.TextAreaFor(m => m.Farm.WebAddress, new { @class = "form-control" })
+            @Html.TextAreaFor(m => m.Market.WebAddress, new { @class = "form-control" })
         </div>
-        @Html.Hidden("FileUploadUrl", Url.Action("UploadFiles", "Farm"))
+        @Html.Hidden("FileUploadUrl", Url.Action("UploadFiles", "Farm", Model))
         <table>
             <tr>
                 <td>

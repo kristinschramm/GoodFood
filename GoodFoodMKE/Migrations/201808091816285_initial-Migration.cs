@@ -3,7 +3,7 @@ namespace GoodFoodMKE.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class initialmigration : DbMigration
+    public partial class initialMigration : DbMigration
     {
         public override void Up()
         {
@@ -26,8 +26,78 @@ namespace GoodFoodMKE.Migrations
                         PhoneNumber = c.String(),
                         EmailAddress = c.String(),
                         GravatarEmailHash = c.String(),
+                        AppUser_Id = c.String(maxLength: 128),
+                        Farm_Id = c.Int(),
+                        Market_Id = c.Int(),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.AppUsers", t => t.AppUser_Id)
+                .ForeignKey("dbo.Farms", t => t.Farm_Id)
+                .ForeignKey("dbo.Markets", t => t.Market_Id)
+                .Index(t => t.AppUser_Id)
+                .Index(t => t.Farm_Id)
+                .Index(t => t.Market_Id);
+            
+            CreateTable(
+                "dbo.BlogEntries",
+                c => new
+                    {
+                        BlogId = c.Int(nullable: false, identity: true),
+                        Title = c.String(),
+                        Content = c.String(),
+                        ImagePath = c.String(),
+                        CreatedDate = c.DateTime(nullable: false),
+                        Approved = c.Boolean(nullable: false),
+                        Creator_Id = c.String(maxLength: 128),
+                    })
+                .PrimaryKey(t => t.BlogId)
+                .ForeignKey("dbo.AppUsers", t => t.Creator_Id)
+                .Index(t => t.Creator_Id);
+            
+            CreateTable(
+                "dbo.Comments",
+                c => new
+                    {
+                        CommentId = c.Int(nullable: false, identity: true),
+                        CommentString = c.String(),
+                        CreatedDate = c.DateTime(nullable: false),
+                        UpVote = c.Int(nullable: false),
+                        DownVote = c.Int(nullable: false),
+                        BlogId = c.Int(nullable: false),
+                        Commentor_Id = c.String(maxLength: 128),
+                        HeadComment_CommentId = c.Int(),
+                    })
+                .PrimaryKey(t => t.CommentId)
+                .ForeignKey("dbo.AppUsers", t => t.Commentor_Id)
+                .ForeignKey("dbo.Comments", t => t.HeadComment_CommentId)
+                .ForeignKey("dbo.BlogEntries", t => t.BlogId, cascadeDelete: true)
+                .Index(t => t.BlogId)
+                .Index(t => t.Commentor_Id)
+                .Index(t => t.HeadComment_CommentId);
+            
+            CreateTable(
+                "dbo.Events",
+                c => new
+                    {
+                        EventId = c.Int(nullable: false, identity: true),
+                        Title = c.String(),
+                        AddressId = c.Int(nullable: false),
+                        CreatorId = c.Int(nullable: false),
+                        Recurring = c.Boolean(nullable: false),
+                        RecurringType = c.String(),
+                        Creator_Id = c.String(maxLength: 128),
+                        Host_Id = c.Int(),
+                        Market_Id = c.Int(),
+                    })
+                .PrimaryKey(t => t.EventId)
+                .ForeignKey("dbo.AppUsers", t => t.Creator_Id)
+                .ForeignKey("dbo.Addresses", t => t.AddressId, cascadeDelete: true)
+                .ForeignKey("dbo.Farms", t => t.Host_Id)
+                .ForeignKey("dbo.Markets", t => t.Market_Id)
+                .Index(t => t.AddressId)
+                .Index(t => t.Creator_Id)
+                .Index(t => t.Host_Id)
+                .Index(t => t.Market_Id);
             
             CreateTable(
                 "dbo.Farms",
@@ -35,15 +105,17 @@ namespace GoodFoodMKE.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(),
-                        LocationId = c.Int(nullable: false),
                         AddressId = c.Int(nullable: false),
-                        Market_Id = c.Int(),
+                        WebAddress = c.String(),
+                        RequestorId = c.String(maxLength: 128),
+                        Active = c.Boolean(nullable: false),
+                        LogoFilePath = c.String(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Addresses", t => t.AddressId, cascadeDelete: true)
-                .ForeignKey("dbo.Markets", t => t.Market_Id)
+                .ForeignKey("dbo.AppUsers", t => t.RequestorId)
                 .Index(t => t.AddressId)
-                .Index(t => t.Market_Id);
+                .Index(t => t.RequestorId);
             
             CreateTable(
                 "dbo.Products",
@@ -75,12 +147,17 @@ namespace GoodFoodMKE.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(),
-                        LocationId = c.Int(nullable: false),
                         AddressId = c.Int(nullable: false),
+                        WebAddress = c.String(),
+                        RequestorId = c.String(maxLength: 128),
+                        Active = c.Boolean(nullable: false),
+                        LogoFilePath = c.String(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Addresses", t => t.AddressId, cascadeDelete: true)
-                .Index(t => t.AddressId);
+                .ForeignKey("dbo.AppUsers", t => t.RequestorId)
+                .Index(t => t.AddressId)
+                .Index(t => t.RequestorId);
             
             CreateTable(
                 "dbo.AspNetRoles",
@@ -158,22 +235,46 @@ namespace GoodFoodMKE.Migrations
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
-            DropForeignKey("dbo.Farms", "Market_Id", "dbo.Markets");
+            DropForeignKey("dbo.Events", "Market_Id", "dbo.Markets");
+            DropForeignKey("dbo.Markets", "RequestorId", "dbo.AppUsers");
             DropForeignKey("dbo.Markets", "AddressId", "dbo.Addresses");
+            DropForeignKey("dbo.AppUsers", "Market_Id", "dbo.Markets");
+            DropForeignKey("dbo.Events", "Host_Id", "dbo.Farms");
+            DropForeignKey("dbo.Farms", "RequestorId", "dbo.AppUsers");
             DropForeignKey("dbo.Products", "Farm_Id", "dbo.Farms");
             DropForeignKey("dbo.Products", "ProductTypeId", "dbo.ProductTypes");
             DropForeignKey("dbo.Farms", "AddressId", "dbo.Addresses");
+            DropForeignKey("dbo.AppUsers", "Farm_Id", "dbo.Farms");
+            DropForeignKey("dbo.Events", "AddressId", "dbo.Addresses");
+            DropForeignKey("dbo.Events", "Creator_Id", "dbo.AppUsers");
+            DropForeignKey("dbo.BlogEntries", "Creator_Id", "dbo.AppUsers");
+            DropForeignKey("dbo.Comments", "BlogId", "dbo.BlogEntries");
+            DropForeignKey("dbo.Comments", "HeadComment_CommentId", "dbo.Comments");
+            DropForeignKey("dbo.Comments", "Commentor_Id", "dbo.AppUsers");
+            DropForeignKey("dbo.AppUsers", "AppUser_Id", "dbo.AppUsers");
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
+            DropIndex("dbo.Markets", new[] { "RequestorId" });
             DropIndex("dbo.Markets", new[] { "AddressId" });
             DropIndex("dbo.Products", new[] { "Farm_Id" });
             DropIndex("dbo.Products", new[] { "ProductTypeId" });
-            DropIndex("dbo.Farms", new[] { "Market_Id" });
+            DropIndex("dbo.Farms", new[] { "RequestorId" });
             DropIndex("dbo.Farms", new[] { "AddressId" });
+            DropIndex("dbo.Events", new[] { "Market_Id" });
+            DropIndex("dbo.Events", new[] { "Host_Id" });
+            DropIndex("dbo.Events", new[] { "Creator_Id" });
+            DropIndex("dbo.Events", new[] { "AddressId" });
+            DropIndex("dbo.Comments", new[] { "HeadComment_CommentId" });
+            DropIndex("dbo.Comments", new[] { "Commentor_Id" });
+            DropIndex("dbo.Comments", new[] { "BlogId" });
+            DropIndex("dbo.BlogEntries", new[] { "Creator_Id" });
+            DropIndex("dbo.AppUsers", new[] { "Market_Id" });
+            DropIndex("dbo.AppUsers", new[] { "Farm_Id" });
+            DropIndex("dbo.AppUsers", new[] { "AppUser_Id" });
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
@@ -183,6 +284,9 @@ namespace GoodFoodMKE.Migrations
             DropTable("dbo.ProductTypes");
             DropTable("dbo.Products");
             DropTable("dbo.Farms");
+            DropTable("dbo.Events");
+            DropTable("dbo.Comments");
+            DropTable("dbo.BlogEntries");
             DropTable("dbo.AppUsers");
             DropTable("dbo.Addresses");
         }

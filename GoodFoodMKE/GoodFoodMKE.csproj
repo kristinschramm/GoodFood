@@ -205,33 +205,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Ignored\API.cs" />
-    <Compile Include="Migrations\201807261659587_initial migration.cs" />
-    <Compile Include="Migrations\201807261659587_initial migration.Designer.cs">
-      <DependentUpon>201807261659587_initial migration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201807301509063_update farmer table model.cs" />
-    <Compile Include="Migrations\201807301509063_update farmer table model.Designer.cs">
-      <DependentUpon>201807301509063_update farmer table model.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201807301514439_updateMarket.cs" />
-    <Compile Include="Migrations\201807301514439_updateMarket.Designer.cs">
-      <DependentUpon>201807301514439_updateMarket.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201807301556337_addWebAddressField.cs" />
-    <Compile Include="Migrations\201807301556337_addWebAddressField.Designer.cs">
-      <DependentUpon>201807301556337_addWebAddressField.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201807301648355_addFarmActiveBool.cs" />
-    <Compile Include="Migrations\201807301648355_addFarmActiveBool.Designer.cs">
-      <DependentUpon>201807301648355_addFarmActiveBool.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201808012001412_add blog and comment.cs" />
-    <Compile Include="Migrations\201808012001412_add blog and comment.Designer.cs">
-      <DependentUpon>201808012001412_add blog and comment.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201808012003248_add comments and blogs.cs" />
-    <Compile Include="Migrations\201808012003248_add comments and blogs.Designer.cs">
-      <DependentUpon>201808012003248_add comments and blogs.cs</DependentUpon>
+    <Compile Include="Migrations\201808091816285_initial-Migration.cs" />
+    <Compile Include="Migrations\201808091816285_initial-Migration.Designer.cs">
+      <DependentUpon>201808091816285_initial-Migration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -239,6 +215,7 @@
     <Compile Include="Models\AppUser.cs" />
     <Compile Include="Models\BlogEntry.cs" />
     <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Farm.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -327,7 +304,8 @@
     <Content Include="Views\Farm\Create.cshtml" />
     <Content Include="Views\Market\Create.cshtml" />
     <Content Include="Views\Market\Index.cshtml" />
-    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Home\AdminHome.cshtml" />
+    <Content Include="Views\Market\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -347,26 +325,8 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201807261659587_initial migration.resx">
-      <DependentUpon>201807261659587_initial migration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807301509063_update farmer table model.resx">
-      <DependentUpon>201807301509063_update farmer table model.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807301514439_updateMarket.resx">
-      <DependentUpon>201807301514439_updateMarket.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807301556337_addWebAddressField.resx">
-      <DependentUpon>201807301556337_addWebAddressField.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807301648355_addFarmActiveBool.resx">
-      <DependentUpon>201807301648355_addFarmActiveBool.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808012001412_add blog and comment.resx">
-      <DependentUpon>201808012001412_add blog and comment.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808012003248_add comments and blogs.resx">
-      <DependentUpon>201808012003248_add comments and blogs.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808091816285_initial-Migration.resx">
+      <DependentUpon>201808091816285_initial-Migration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

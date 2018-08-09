@@ -7,13 +7,13 @@ namespace GoodFoodMKE.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class updatefarmertablemodel : IMigrationMetadata
+    public sealed partial class initialMigration : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(updatefarmertablemodel));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(initialMigration));
         
         string IMigrationMetadata.Id
         {
-            get { return "201807301509063_update farmer table model"; }
+            get { return "201808091816285_initial-Migration"; }
         }
         
         string IMigrationMetadata.Source

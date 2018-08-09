@@ -8,6 +8,8 @@ using GoodFoodMKE.Models;
 using GoodFoodMKE.Models.ViewModels;
 using Microsoft.AspNet.Identity;
 using System.Configuration;
+using System.Data.Entity;
+
 
 namespace GoodFoodMKE.Controllers
 {
@@ -16,41 +18,33 @@ namespace GoodFoodMKE.Controllers
         private ApplicationDbContext _context;
         public MarketController()
         {
-                _context = new ApplicationDbContext();
+            _context = new ApplicationDbContext();
         }
         // GET: Farm
         public ActionResult Index()
         {
-            var viewModels = new List<MarketViewModel>();
-
-            var markets = _context.Markets.OrderBy(m => m.Name).ToList();
-
-            foreach (var market in markets)
-            {
-                var viewModel = new MarketViewModel
-                {
-                    Market = market,
-                    Farms = _context.Farms.ToList()
-                };
-                viewModels.Add(viewModel);
-            }
-
-            return View(viewModels);
+            var markets = _context.Markets.Include(m=>m.Address).OrderBy(m => m.Name).ToList();
+            return View(markets);
         }
 
         //CREATE: Market
-    [Authorize]
-    public ActionResult Create()
-    {
-        var viewModel = new CreateMarketViewModel()
+        [Authorize]
+        public ActionResult Create()
         {
-                AppUsers = _context.AppUsers.ToList(),
-                RequestorId = User.Identity.GetUserId(),
-                Farms = _context.Farms.ToList()
+            var newMarket = new Market();
+            _context.Markets.Add(newMarket);
+            _context.SaveChanges();
 
-        };
 
-        return View(viewModel);
+            var viewModel = new CreateMarketViewModel()
+            {
+                Market = newMarket,
+                RequestorId = User.Identity.GetUserId()
+                
+
+            };
+
+            return View(viewModel);
         }
 
         [Authorize]
@@ -61,9 +55,19 @@ namespace GoodFoodMKE.Controllers
             var appUser = _context.AppUsers.Single(a => a.Id == userId);
             if (!ModelState.IsValid)
             {
-                model.AppUsers = _context.AppUsers.ToList();
-                model.RequestorId = User.Identity.GetUserId();
-                model.Farms = _context.Farms.ToList();
+
+                var newMarket = new Market();
+                _context.Markets.Add(newMarket);
+                _context.SaveChanges();
+
+
+                var viewModel = new CreateMarketViewModel()
+                {
+                    Market = newMarket,
+                    RequestorId = User.Identity.GetUserId()
+
+
+                };
 
                 return View(model);
             }
@@ -73,28 +77,41 @@ namespace GoodFoodMKE.Controllers
             };
             _context.Addresses.Add(newAddress);
 
-            var newMarket = new Market()
-            {
-                AccountManagers = _context.AppUsers.Where(m => m.Id == appUser.Id).ToList(),
-                Active = false,
-                Address = newAddress,
-                Name = model.Market.Name,
-                WebAddress = model.Market.WebAddress
-            };
-            _context.Markets.Add(newMarket);
+            var tempMarket = _context.Markets.Include(m =>m.AccountManagers).Single(m => m.Id == model.Market.Id);
+            tempMarket.AccountManagers = _context.AppUsers.Where(m => m.Id == appUser.Id).ToList();
+            tempMarket.Active = false;
+            tempMarket.Address = newAddress;
+            tempMarket.Name = model.Market.Name;
+            tempMarket.WebAddress = model.Market.WebAddress;
+                        
             _context.SaveChanges();
 
             return RedirectToAction("Index", "Market");
         }
+        public ActionResult Details(int id)
+        {
+            var market = _context.Markets.Include(m => m.FarmIds).Single(m => m.Id == id);
+
+            return View(market);
+        }
+
         [HttpPost]
-        public ActionResult UploadFiles()
+        public ActionResult UploadFiles(Market market)
         {
             bool isSuccess = false;
             string serverMessage = string.Empty;
             var fileOne = Request.Files[0] as HttpPostedFileBase;
             string uploadPath = ConfigurationManager.AppSettings["UPLOAD_PATH"].ToString();
             string newFileOne = Path.Combine(uploadPath, fileOne.FileName);
+            string logoFilePath = fileOne.FileName;
 
+            var tempMarket = _context.Markets.Single(m => m.Id == market.Id);
+            tempMarket.LogoFilePath = logoFilePath;
+
+            _context.SaveChanges();
+            //pass through market object to store filename 
+
+            
             fileOne.SaveAs(newFileOne);
 
 
@@ -111,5 +128,6 @@ namespace GoodFoodMKE.Controllers
             return Json(new { IsSucccess = isSuccess, ServerMessage = serverMessage }, JsonRequestBehavior.AllowGet);
         }
     }
-}
 
+
+}

@@ -20,8 +20,7 @@ namespace GoodFoodMKE.Models.ViewModels
     {
         [Display(Name = "Requestor")]
         public string RequestorId { get; set; }
-        public List<AppUser> AppUsers { get; set; }
-        public List<Farm> Farms { get; set; }
+        
         public Market Market { get; set; }
 
     }
