@@ -1,0 +1,53 @@
+﻿@model GoodFoodMKE.Models.BlogEntry
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.Title</h2>
+
+<div>
+    <h4> by @Model.Creator.NameFirst @Model.Creator.NameLast</h4>
+    @{
+        string _url = "https://www.gravatar.com/avatar/" + Model.Creator.GravatarEmailHash;
+    }
+    <img src="@Url.Content(_url)" style="width: 200px" title="@ViewData.Model.Creator.NameFirst" />
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Content)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Content)
+        </dd>
+
+        
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+
+       
+
+    </dl>
+</div>
+<p>
+    @if (User.IsInRole(RoleName.Admin)) { 
+    @Html.ActionLink("Edit", "Edit", new { id = Model.BlogId }) 
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

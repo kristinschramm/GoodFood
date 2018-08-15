@@ -1,9 +1,9 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-
+@using Microsoft.AspNet.Identity;
 <div class="banner">
-<img src="~/Image/farm_market_banner.png" style="width: 100%" />
+    <img src="~/Image/farm_market_banner.png" style="width: 100%" />
 </div>
 
 <div class="row">
@@ -13,8 +13,25 @@
             Good food shouldn’t be hard to find. That’s why it’s good food Milwaukee’s mission to connect eaters with local growers. By shopping for and eating locally produced food grown with sustainable  practices in mind, we can improve not just the health of our bodies, but also our environment, economy, and community.
         </p>
         <h2 style="text-align: center; color: #8b0162">
-            @Html.ActionLink("Register Now" , "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink"})
-            
-            </h2>
+
+            @if (Request.IsAuthenticated)
+            {
+
+                if (User.IsInRole(RoleName.Farm))
+                {
+                    @Html.ActionLink("View Profile", "Profile", "Farm", new { id = User.Identity.GetUserId() }, htmlAttributes: new { id = "viewProfile" })
+                };
+                if (User.IsInRole(RoleName.Market))
+                {
+                    @Html.ActionLink("View Profile", "Profile", "Market", new { id = User.Identity.GetUserId() }, htmlAttributes: new { id = "viewProfile" })
+
+                };
+                
+            }
+            else
+            {
+                @Html.ActionLink("Register Now", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })
+            }
+        </h2>
     </div>
 </div>

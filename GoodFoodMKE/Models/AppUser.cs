@@ -25,7 +25,6 @@ namespace GoodFoodMKE.Models
 
         public string GravatarEmailHash { get; set; }
 
-        public List<AppUser> AccountManager { get; set; }
 
 
     }

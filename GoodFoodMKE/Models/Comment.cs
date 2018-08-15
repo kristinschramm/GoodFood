@@ -12,12 +12,9 @@ namespace GoodFoodMKE.Models
         public int CommentId { get; set; }
         public AppUser Commentor { get; set; }
         public string CommentString { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public int UpVote { get; set; }
-        public int DownVote { get; set; }
-        public Comment HeadComment { get; set; }
+        public DateTime CreatedDate { get; set; }              
         public int BlogId { get; set; }
-        public BlogEntry HeadEntry { get; set; }
+        
 
     }
 }

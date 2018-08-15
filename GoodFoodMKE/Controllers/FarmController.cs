@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using GoodFoodMKE.Models;
 using GoodFoodMKE.Models.ViewModels;
 using Microsoft.AspNet.Identity;
+using System.Data.Entity;
 
 namespace GoodFoodMKE.Controllers
 {
@@ -23,7 +24,7 @@ namespace GoodFoodMKE.Controllers
         {
             var viewModels = new List<FarmViewModel>();
 
-            var farms = _context.Farms.OrderBy(f => f.Name).ToList();
+            var farms = _context.Farms.Include(f => f.Address).OrderBy(f => f.Name).ToList();
 
             foreach (var farm in farms)
             {
@@ -38,55 +39,7 @@ namespace GoodFoodMKE.Controllers
             return View(viewModels);
         }
 
-        //CREATE: Farm
-        [Authorize]
-        public ActionResult Create()
-        {
-            var viewModel = new CreateFarmViewModel()
-            {
-                AppUsers = _context.AppUsers.ToList(),
-                RequestorId = User.Identity.GetUserId(),
-                Products = _context.Products.ToList()
-
-            };
-
-            return View(viewModel);
-                }
-
-        [Authorize]
-        [HttpPost]
-        public ActionResult Create(CreateFarmViewModel model)
-        {
-            var userId = User.Identity.GetUserId();
-            var appUser = _context.AppUsers.Single(a => a.Id == userId);
-            if (!ModelState.IsValid)
-            {
-                model.AppUsers = _context.AppUsers.ToList();
-                model.RequestorId = User.Identity.GetUserId();
-                model.Products = _context.Products.ToList();
-
-                return View(model);
-            }
-            var newAddress = new Address()
-            {
-                AddressString = model.Farm.Address.AddressString,
-            };
-            _context.Addresses.Add(newAddress);
-
-            var newFarm = new Farm()
-            {
-                AccountManagers = _context.AppUsers.Where(m => m.Id == appUser.Id).ToList(),
-                Active = false,
-                Address = newAddress,
-                Name = model.Farm.Name,
-                WebAddress = model.Farm.WebAddress
-            };
-            _context.Farms.Add(newFarm);
-            _context.SaveChanges();
-
-            return RedirectToAction("Index", "Farm");
-        }
-        [HttpPost]
+       [HttpPost]
         public ActionResult UploadFiles()
         {
             bool isSuccess = false;
@@ -109,6 +62,24 @@ namespace GoodFoodMKE.Controllers
                 serverMessage = "File upload has failed. Please try again.";
             }
             return Json(new { IsSucccess = isSuccess, ServerMessage = serverMessage }, JsonRequestBehavior.AllowGet);
+        }
+        public new ActionResult Profile(string id)
+        {
+            var viewModel = new FarmViewModel
+            {
+                Farm = _context.Farms.Include(f => f.Address).Include(f => f.Requestor).Where(f => f.RequestorId == id).Single()
+
+            };
+            var tempMarketConnections = _context.MarketFarmConnections.Where(mf => mf.FarmId == viewModel.Farm.Id).ToList();
+            var markets = new List<Market>(); 
+            foreach(var market in tempMarketConnections)
+            {
+                var tempMarket = _context.Markets.Include(m => m.Address).Include(m => m.Requestor).Where(m => m.Id == market.MarketId).Single();
+                markets.Add(tempMarket);
+            }
+            viewModel.Markets = markets;
+
+            return View("Details", viewModel);
         }
     }
 }

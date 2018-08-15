@@ -4,16 +4,14 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace GoodFoodMKE.Models
 {
-    public class Address
+    public class MarketFarmConnection
     {
+        [Key]
         public int Id { get; set; }
-        [Display(Name ="Street Address")]
-        public string AddressString { get; set; }
-        public double Lat { get; set; }
-
-        public double Lng { get; set; }
+        public int FarmId { get; set; }
+        public int MarketId { get; set; }
+        public bool Active { get; set; }
     }
 }

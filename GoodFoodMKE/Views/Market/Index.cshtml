@@ -8,37 +8,53 @@
 <h2>Markets</h2>
 
 <p>
-    @Html.ActionLink("Add your market to our community", "Create")
+    @Html.ActionLink("Add your market to our community!", "RegisterMarket", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })
 </p>
 @if(Model.Count()!=0)
 {
-    <table id="farms" class="table table-bordered table-hover table-responsive">
+    <table id="Markets" class="table table-bordered table-hover table-responsive">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Address</th>
                 <th>Phone Number</th>
                 <th>Website</th>
+                @if (User.IsInRole(RoleName.Admin) || User.IsInRole(RoleName.Market) || User.IsInRole(RoleName.Farm))
+                {<th></th>}
 
             </tr>
         </thead>
         <tbody>
             @foreach (var m in Model)
             {
-                <tr>
-                    <td>@Html.ActionLink(m.Name, "Details", "Market", new { id = m.Id}, null)</td>
-                    <td>@m.Address.AddressString</td>
-                    <td>@m.WebAddress</td>
+            <tr>
+                <td>@Html.ActionLink(m.Name, "Details", "Market", new { id = m.Id }, null)</td>
+                <td>@m.Address.AddressString</td>
+                <td>@m.PhoneNumber</td>
+                <td>@m.WebAddress</td>
 
-
-
+                @if (User.IsInRole(RoleName.Admin))
+                {
                     <td>
-                        @Html.ActionLink("Edit", "Edit", "Location", new { id = m.Id }, new { @class = "btn btn-default" })
-                        @Html.ActionLink("Details", "Details", "Location", new { id = m.Id }, new { @class = "btn btn-default" })
-
-
+                        @Html.ActionLink("Edit", "Edit", "Market", new { id = m.Id }, new { @class = "btn btn-default" })
                     </td>
-                </tr>
+                }
+                @if (User.IsInRole(RoleName.Farm))
+                {
+                    <td>
+                        @Html.ActionLink("Join", "Join", "Market", new { id = m.Id }, new { @class = "btn btn-default" })
+                    </td>
+                }
+                
+                @using Microsoft.AspNet.Identity;
+                @if ((User.Identity.GetUserId() == m.RequestorId))
+                {
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", "Market", new { id = m.Id }, new { @class = "btn btn-default" })
+                    </td>
+                }
+
+            </tr>
             }
         </tbody>
     </table>
@@ -48,7 +64,7 @@
     {
     <script>
         $(document).ready(function () {
-            $("#locations").DataTable();
+            $("#Markets").DataTable();
         })
     </script>
 }

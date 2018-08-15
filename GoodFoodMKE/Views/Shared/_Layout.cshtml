@@ -34,6 +34,25 @@
                     <li class="nav-link">
                         <a class="nav-link">@Html.ActionLink("Blogs", "Index", "Blog")</a>
                     </li>
+                    @if (User.IsInRole(RoleName.Admin))
+                    {
+                        <li class="nav-link">
+                            <a class="nav-link">@Html.ActionLink("Admin", "AdminHome", "Home")</a>
+                        </li>
+                    }
+                    @if (User.IsInRole(RoleName.Farm))
+                    {
+                        <li class="nav-link">
+                            <a class="nav-link">@Html.ActionLink("Profile", "Edit", "Farm")</a>
+                        </li>
+                    }
+                    @if (User.IsInRole(RoleName.Market))
+                    {
+                        <li class="nav-link">
+                            <a class="nav-link">@Html.ActionLink("Profile", "Edit", "Market")</a>
+                        </li>
+                    }
+
                 </ul>
             </div>
             <div class="nav navar-fixed-top navbar-nav navbar-right col-5">

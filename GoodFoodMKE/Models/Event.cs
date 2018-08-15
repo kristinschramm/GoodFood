@@ -15,10 +15,13 @@ namespace GoodFoodMKE.Models
         public Address EventAddress { get; set; }
         public int CreatorId { get; set; }
         public AppUser Creator { get; set; }
-        public Farm Host { get; set; }
-        public Market Market { get; set; }
-        public List<DateTime> DateTimes { get; set; }
-        public bool Recurring { get; set; }
-        public string RecurringType { get; set; }
+        public List<Farm> Farms { get; set; }
+        public List<Market> Markets { get; set; }
+        
+        public DateTime DateTime { get; set; }
+
+        [Display(Name = "Day of Week")]
+        public DayOfWeek DayOfWeek { get; set; }
+        public DateTime Time { get; set; }
     }
 }

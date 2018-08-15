@@ -20,98 +20,90 @@ namespace GoodFoodMKE.Controllers
         {
             _context = new ApplicationDbContext();
         }
-        // GET: Farm
+
         public ActionResult Index()
         {
-            var markets = _context.Markets.Include(m=>m.Address).OrderBy(m => m.Name).ToList();
+            var markets = _context.Markets.Include(m => m.Address).OrderBy(m => m.Name).ToList();
             return View(markets);
         }
 
-        //CREATE: Market
-        [Authorize]
-        public ActionResult Create()
+
+        public ActionResult Details(int id)
         {
-            var newMarket = new Market();
-            _context.Markets.Add(newMarket);
-            _context.SaveChanges();
-
-
-            var viewModel = new CreateMarketViewModel()
+            var viewModel = new MarketViewModel()
             {
-                Market = newMarket,
-                RequestorId = User.Identity.GetUserId()
-                
+                Market = _context.Markets.Include(m => m.Address).Include(m => m.Requestor).Single(m => m.Id == id),
 
             };
+            var connections = _context.MarketFarmConnections.Where(m => m.MarketId == viewModel.Market.Id).Where( m => m.Active == false).ToList();
+            var farms = new List<Farm>();
+            ; foreach (var c in connections)
+            {
+                var tempFarm = _context.Farms.Include(m => m.Address).Where(m => m.Id == c.FarmId).Single();
+                farms.Add(tempFarm);
+            };
+            viewModel.PendingFarms = farms;
+
+            var connectionsActive = _context.MarketFarmConnections.Where(m => m.MarketId == viewModel.Market.Id).Where(m => m.Active == true).ToList();
+            var farmsActive = new List<Farm>();
+            foreach (var c in connections)
+            {
+                var tempFarm = _context.Farms.Include(m => m.Address).Where(m => m.Id == c.FarmId).Single();
+                farmsActive.Add(tempFarm);
+            };
+            viewModel.ActiveFarms = farmsActive;
 
             return View(viewModel);
         }
-
-        [Authorize]
-        [HttpPost]
-        public ActionResult Create(CreateMarketViewModel model)
+        public ActionResult Edit(int id)
         {
-            var userId = User.Identity.GetUserId();
-            var appUser = _context.AppUsers.Single(a => a.Id == userId);
-            if (!ModelState.IsValid)
+            var farms = new List<Farm>();
+            var marketFarms = new List<MarketFarmConnection>();
+            marketFarms = _context.MarketFarmConnections.Where(m => m.MarketId == id).ToList();
+            var viewModel = new MarketViewModel()
             {
-
-                var newMarket = new Market();
-                _context.Markets.Add(newMarket);
-                _context.SaveChanges();
+                Market = _context.Markets.Include(m => m.Address).Single(m => m.Id == id),
 
 
-                var viewModel = new CreateMarketViewModel()
-                {
-                    Market = newMarket,
-                    RequestorId = User.Identity.GetUserId()
-
-
-                };
-
-                return View(model);
-            }
-            var newAddress = new Address()
-            {
-                AddressString = model.Market.Address.AddressString,
             };
-            _context.Addresses.Add(newAddress);
+            foreach (var marketFarm in marketFarms)
+            {
+                var farm = _context.Farms.Include(m => m.Address).Where(f => f.Id == marketFarm.FarmId).Single();
+                farms.Add(farm);
+            }
+            viewModel.ActiveFarms = farms;
 
-            var tempMarket = _context.Markets.Include(m =>m.AccountManagers).Single(m => m.Id == model.Market.Id);
-            tempMarket.AccountManagers = _context.AppUsers.Where(m => m.Id == appUser.Id).ToList();
-            tempMarket.Active = false;
-            tempMarket.Address = newAddress;
-            tempMarket.Name = model.Market.Name;
-            tempMarket.WebAddress = model.Market.WebAddress;
-                        
+            return View(viewModel);
+        }
+        [HttpPost]
+        public ActionResult Edit(MarketViewModel viewModel)
+        {
+            var dbMarket = _context.Markets.Include(m => m.Address).Where(m => m.Id == viewModel.Market.Id).Single();
+            dbMarket.Address.AddressString = viewModel.Market.Address.AddressString;
+            dbMarket.Name = viewModel.Market.Name;
+            dbMarket.PhoneNumber = viewModel.Market.PhoneNumber;
+            dbMarket.WebAddress = viewModel.Market.WebAddress;
+
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Market");
-        }
-        public ActionResult Details(int id)
-        {
-            var market = _context.Markets.Include(m => m.FarmIds).Single(m => m.Id == id);
+            return RedirectToAction("Details", dbMarket.Id);
 
-            return View(market);
         }
+
 
         [HttpPost]
-        public ActionResult UploadFiles(Market market)
+        public ActionResult UploadFiles(int id)
         {
             bool isSuccess = false;
             string serverMessage = string.Empty;
             var fileOne = Request.Files[0] as HttpPostedFileBase;
             string uploadPath = ConfigurationManager.AppSettings["UPLOAD_PATH"].ToString();
             string newFileOne = Path.Combine(uploadPath, fileOne.FileName);
-            string logoFilePath = fileOne.FileName;
 
-            var tempMarket = _context.Markets.Single(m => m.Id == market.Id);
-            tempMarket.LogoFilePath = logoFilePath;
-
+            var market = _context.Markets.Where(m => m.Id == id).Single();
+            market.LogoFilePath = "~/Image/" + fileOne.FileName;
             _context.SaveChanges();
-            //pass through market object to store filename 
 
-            
             fileOne.SaveAs(newFileOne);
 
 
@@ -125,9 +117,65 @@ namespace GoodFoodMKE.Controllers
                 isSuccess = false;
                 serverMessage = "File upload has failed. Please try again.";
             }
-            return Json(new { IsSucccess = isSuccess, ServerMessage = serverMessage }, JsonRequestBehavior.AllowGet);
+            return Json(new { IsSucccess = isSuccess, ServerMessage = serverMessage, JsonRequestBehavior.AllowGet });
         }
+        public new ActionResult Profile(string id)
+        {
+            var viewModel = new MarketViewModel
+            {
+                Market = _context.Markets.Include(m => m.Address).Include(m => m.Requestor).Where(m => m.RequestorId == id).Single()
+            };
+
+            var connections = _context.MarketFarmConnections.Where(m => m.MarketId == viewModel.Market.Id).Where(m => m.Active == false).ToList();
+            var farms = new List<Farm>();
+             foreach (var c in connections)
+            {
+                var tempFarm = _context.Farms.Include(m => m.Address).Where(m => m.Id == c.FarmId).Single();
+                farms.Add(tempFarm);
+            };
+            viewModel.PendingFarms = farms;
+
+            var connectionsActive = _context.MarketFarmConnections.Where(m => m.MarketId == viewModel.Market.Id).Where(m => m.Active == true).ToList();
+            var farmsActive = new List<Farm>();
+            foreach (var c in connections)
+            {
+                var tempFarm = _context.Farms.Include(m => m.Address).Where(m => m.Id == c.FarmId).Single();
+                farmsActive.Add(tempFarm);
+            };
+            viewModel.ActiveFarms = farmsActive;
+
+            return View("Details", viewModel);
+        }
+
+        public ActionResult Join(int id)
+        {
+            var appUserId = User.Identity.GetUserId();
+            var tempMarket = _context.Markets.Include(m => m.Address).Where(m => m.Id == id).Single();
+            var tempFarm = _context.Farms.Include(m => m.Address).Where(m => m.RequestorId == appUserId).Single();
+            var connection = new MarketFarmConnection()
+            {
+                Active = false,
+                MarketId = tempMarket.Id,
+                FarmId = tempFarm.Id
+
+            };
+
+            _context.MarketFarmConnections.Add(connection);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        public ActionResult ApproveFarm(int id)
+        {
+
+
+            var tempConnection = _context.MarketFarmConnections.Where(f => f.FarmId == id).Single();
+            tempConnection.Active = true;
+            _context.SaveChanges();
+
+
+            return RedirectToAction("Profile");
+
+        }
+
     }
-
-
 }

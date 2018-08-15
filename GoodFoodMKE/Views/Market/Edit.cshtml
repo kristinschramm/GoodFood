@@ -1,0 +1,103 @@
+﻿<script type="text/javascript" src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Index.js"></script>
+@model MarketViewModel
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Edit Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm("Edit", "Market", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+
+    <p>Edit your page. </p>
+
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Market.RequestorId)
+    @Html.HiddenFor(m => m.Market.Id)
+    @Html.HiddenFor(m => m.Market.AddressId)
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Market.Name, new { @class = "col-md-2 control-label" })
+        <div class="col-md-8">
+            @Html.TextAreaFor(m => m.Market.Name, new { @class = "form-control", id = "marketName" })
+        </div>
+        @Html.LabelFor(m => m.Market.PhoneNumber, new { @class = "col-md-2 control-label" })
+        <div class="col-md-8">
+            @Html.TextAreaFor(m => m.Market.PhoneNumber, new { @class = "form-control" })
+        </div>
+        @Html.LabelFor(m => m.Market.Address.AddressString, new { @class = "col-md-2 control-label" })
+        <div class="col-md-8">
+            @Html.TextAreaFor(m => m.Market.Address.AddressString, new { @class = "form-control" })
+        </div>
+        @Html.LabelFor(m => m.Market.WebAddress, new { @class = "col-md-2 control-label" })
+        <div class="col-md-8">
+            @Html.TextAreaFor(m => m.Market.WebAddress, new { @class = "form-control" })
+        </div>
+        @Html.Hidden("FileUploadUrl", Url.Action("UploadFiles", "Market", new { id = Model.Market.Id }))
+        <table>
+            <tr>
+                <td>
+                    <div id="uploadMsg"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>Profile Photo: </div>
+                    @if (Model.Market.LogoFilePath != null)
+
+                    {
+                        string _url = @Model.Market.LogoFilePath;
+                        <img src="@Url.Content(_url)" style="width: 200px" title="@ViewData.Model.Market.LogoFilePath" />
+                    }
+                    <div>
+                        <input type="file" id="fileOne" name="files[0]" />
+
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <button type="button" id="btnUpload">UPLOAD FILE</button>
+                </td>
+            </tr>
+        </table>
+
+
+
+    </div>
+    if (Model.Farms.Count > 0)
+
+    {
+        <th>Name</th>
+        <th>Approve?</th>
+        <th>Remove</th>
+        <table>
+            @foreach (var f in Model.Farms)
+            {
+            <tr>
+                <td>@f.Name</td>
+                @if (f.Active == false)
+                {
+                    <td>@Html.ActionLink("Approve", "ApproveFarm", "Market", new { id = f.Id }, new { @class = "btn btn-default" }) </td>
+                }
+                
+                <td>@Html.ActionLink("Remove", "RemoveFarm", "Market", new { id = f.Id }, new { @class = "btn btn-default" }) </td>
+               
+            </tr>
+            }
+        </table>
+    }
+
+
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        <input type="submit" class="btn btn-default" value="Submit" />
+    </div>
+</div>
+
+
+}
+

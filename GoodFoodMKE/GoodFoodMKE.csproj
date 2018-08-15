@@ -46,6 +46,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GoogleMaps.LocationServices, Version=0.1.6329.16944, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GoogleMaps.LocationServices.1.2.0.1\lib\net40\GoogleMaps.LocationServices.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -197,6 +200,8 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AppUsersController.cs" />
+    <Compile Include="Controllers\BlogController.cs" />
+    <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\FarmController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -205,9 +210,21 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Ignored\API.cs" />
-    <Compile Include="Migrations\201808091816285_initial-Migration.cs" />
-    <Compile Include="Migrations\201808091816285_initial-Migration.Designer.cs">
-      <DependentUpon>201808091816285_initial-Migration.cs</DependentUpon>
+    <Compile Include="Migrations\201808142346398_initialMigration.cs" />
+    <Compile Include="Migrations\201808142346398_initialMigration.Designer.cs">
+      <DependentUpon>201808142346398_initialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808151644322_addProductsToFarm.cs" />
+    <Compile Include="Migrations\201808151644322_addProductsToFarm.Designer.cs">
+      <DependentUpon>201808151644322_addProductsToFarm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808151701039_updateEvent.cs" />
+    <Compile Include="Migrations\201808151701039_updateEvent.Designer.cs">
+      <DependentUpon>201808151701039_updateEvent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808151713261_editEvents.cs" />
+    <Compile Include="Migrations\201808151713261_editEvents.Designer.cs">
+      <DependentUpon>201808151713261_editEvents.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -220,8 +237,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Market.cs" />
-    <Compile Include="Models\Product.cs" />
-    <Compile Include="Models\ProductType.cs" />
+    <Compile Include="Models\MarketFarmConnection.cs" />
     <Compile Include="Models\RoleName.cs" />
     <Compile Include="Models\ViewModels\AdminViewModel.cs" />
     <Compile Include="Models\ViewModels\FarmViewModel.cs" />
@@ -230,6 +246,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="GoogleMaps.LocationServices.readme.txt" />
     <Content Include="Image\brookfield_logo.jpeg" />
     <Content Include="Image\brookfield_market.jpeg" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -252,17 +269,24 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\copy_csv_xls_pdf.swf" />
+    <Content Include="Scripts\dataTables.bootstrap.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.dataTables.js" />
+    <Content Include="Scripts\jquery.dataTables.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\Index.js" />
+    <Content Include="Scripts\TableTools.js" />
+    <Content Include="Scripts\TableTools_orig.js" />
+    <Content Include="Scripts\ZeroClipboard.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -301,15 +325,25 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_EventPartial.cshtml" />
     <Content Include="Views\Farm\Index.cshtml" />
-    <Content Include="Views\Farm\Create.cshtml" />
-    <Content Include="Views\Market\Create.cshtml" />
     <Content Include="Views\Market\Index.cshtml" />
     <Content Include="Views\Home\AdminHome.cshtml" />
     <Content Include="Views\Market\Details.cshtml" />
+    <Content Include="Views\Market\Edit.cshtml" />
+    <Content Include="Views\AppUsers\Index.cshtml" />
+    <Content Include="Views\Farm\Details.cshtml" />
+    <Content Include="Views\Farm\Edit.cshtml" />
+    <Content Include="Views\Account\RegisterMarket.cshtml" />
+    <Content Include="Views\Account\RegisterFarm.cshtml" />
+    <Content Include="Views\Blog\Index.cshtml" />
+    <Content Include="Views\Blog\Create.cshtml" />
+    <Content Include="Views\Blog\Details.cshtml" />
+    <Content Include="Views\Event\Index.cshtml" />
+    <Content Include="Views\Event\Create.cshtml" />
+    <Content Include="Views\Event\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\AppUsers\" />
+    <Folder Include="Views\Events\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -325,8 +359,17 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201808091816285_initial-Migration.resx">
-      <DependentUpon>201808091816285_initial-Migration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808142346398_initialMigration.resx">
+      <DependentUpon>201808142346398_initialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808151644322_addProductsToFarm.resx">
+      <DependentUpon>201808151644322_addProductsToFarm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808151701039_updateEvent.resx">
+      <DependentUpon>201808151701039_updateEvent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808151713261_editEvents.resx">
+      <DependentUpon>201808151713261_editEvents.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

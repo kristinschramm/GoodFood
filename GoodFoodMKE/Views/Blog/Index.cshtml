@@ -1,0 +1,74 @@
+﻿@model IEnumerable<GoodFoodMKE.Models.BlogEntry>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>GoodFoodMKE Blog</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@if (Model.Count() != 0)
+{
+    <table  id="Blogs" class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Creator.NameFirst)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Creator.NameLast)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </th>
+            @if (User.IsInRole(RoleName.Admin))
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.Approved)
+                </th>}
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.Title, "Details", new { id = item.BlogId })
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Creator.NameFirst)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Creator.NameLast)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                </td>
+                @if (User.IsInRole(RoleName.Admin))
+                {
+                    <td>
+                        @Html.ActionLink("Approve", "Approve", new { id = item.BlogId }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.BlogId })
+                    </td>
+                }
+            </tr>
+        }
+
+
+    </table>
+}
+
+@section scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $("#Blogs").DataTable();
+        })
+    </script>
+}

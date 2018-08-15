@@ -7,13 +7,13 @@ namespace GoodFoodMKE.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class initialMigration : IMigrationMetadata
+    public sealed partial class editEvents : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(initialMigration));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(editEvents));
         
         string IMigrationMetadata.Id
         {
-            get { return "201808091816285_initial-Migration"; }
+            get { return "201808151713261_editEvents"; }
         }
         
         string IMigrationMetadata.Source

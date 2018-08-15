@@ -7,45 +7,46 @@
 
 <h2>Farms</h2>
 <p>
-    @Html.ActionLink("Create Farm Profile", "Create")
+    @Html.ActionLink("Add your farm to our community!", "RegisterFarm", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })
 </p>
-<table id="farms" class="table table-bordered table-hover table-responsive">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Address</th>
-            <th>Phone Number</th>
-            <th>Website</th>
-
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var f in Model)
-        {
+@if (Model.Count() != 0)
+{    <table id="farms" class="table table-bordered table-hover table-responsive">
+        <thead>
             <tr>
-                <td>@Html.ActionLink(f.Farm.Name, "Details", "Location", new { id = f.Farm.Id }, null)</td>
-                <td>@f.Farm.Address.AddressString</td>
-                <td>@f.Farm.WebAddress</td>
-                
+                <th>Name</th>
+                <th>Address</th>
+                <th>Phone Number</th>
+                <th>Website</th>
 
-
-                <td>
-                    @Html.ActionLink("Edit", "Edit", "Location", new { id = f.Farm.Id }, new { @class = "btn btn-default" })
-                    @Html.ActionLink("Details", "Details", "Location", new { id = f.Farm.Id }, new { @class = "btn btn-default" })
-
-
-                </td>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var f in Model)
+            {
+                <tr>
+                    <td>@Html.ActionLink(f.Farm.Name, "Details", "Location", new { id = f.Farm.Id }, null)</td>
+                    <td>@f.Farm.Address.AddressString</td>
+                    <td>@f.Farm.WebAddress</td>
 
+
+
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", "Location", new { id = f.Farm.Id }, new { @class = "btn btn-default" })
+                        @Html.ActionLink("Details", "Details", "Location", new { id = f.Farm.Id }, new { @class = "btn btn-default" })
+
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @section scripts
     {
     <script>
-                $(document).ready(function () {
-                    $("#locations").DataTable();
-                })
+        $(document).ready(function () {
+            $("#farms").DataTable();
+        })
     </script>
 }

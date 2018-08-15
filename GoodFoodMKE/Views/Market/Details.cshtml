@@ -1,10 +1,149 @@
-﻿@model Market
+﻿@model MarketViewModel
 
 @{
-    ViewBag.Title = Model.Name;
+    ViewBag.Title = Model.Market.Name;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="~/Scripts/Index.js"></script>
 
-<h2>Model.Name</h2>
+<h2>@Model.Market.Name</h2>
 
-<img src="~/Image/%Model.LogoFilePath%"  style="width: 100%" />
+
+@using Microsoft.AspNet.Identity;
+
+
+@if (User.Identity.GetUserId() == Model.Market.RequestorId)
+{
+
+    @Html.ActionLink("Create Event", "Create", "Event", new { id = Model.Market.Id }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Edit Page", "Edit", new { id = Model.Market.Id }, new { @class = "btn btn-default" })
+
+    if (Model.PendingFarms.Count() != 0)
+    {
+        <p>You have farms waiting to join your market!</p>
+
+        {<table id="farms" class="table table-bordered table-hover table-responsive">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Phone Number</th>
+                        <th>Website</th>
+                        <th>Approve?</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var farm in Model.PendingFarms)
+                    {
+                        <tr>
+                            <td>@Html.ActionLink(farm.Name, "Details", "Location", new { id = farm.Id }, null)</td>
+                            <td>@farm.Address.AddressString</td>
+                            <td>@farm.WebAddress</td>
+
+
+
+                            <td>
+                                @Html.ActionLink("Approve", "ApproveFarm", new { id = farm.Id }, new { @class = "btn btn-default" })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        if (Model.ActiveFarms.Count() != 0)
+        {
+            <p>Active Farms</p>
+
+            {<table id="farms" class="table table-bordered table-hover table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Phone Number</th>
+                            <th>Website</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var farm in Model.PendingFarms)
+                        {
+                            <tr>
+                                <td>@Html.ActionLink(farm.Name, "Details", "Location", new { id = farm.Id }, null)</td>
+                                <td>@farm.Address.AddressString</td>
+                                <td>@farm.PhoneNumber</td>
+                                <td>@farm.WebAddress</td>
+
+
+
+                                
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+        }
+    }
+    <div class="row">
+        <div class="col-4">
+
+            @if (Model.Market.LogoFilePath != null)
+            {
+                string _url = @Model.Market.LogoFilePath;
+                <img src="@Url.Content(_url)" style="width: 200px" title="@ViewData.Model.Market.LogoFilePath" />
+            }
+
+            else
+            {
+                <img src="~/Image/logo.png" style="width: 200px" title="Default Image" />
+
+            }
+        </div>
+        <div id="map">
+
+        </div>
+    </div>
+}
+    @using Newtonsoft.Json;
+    {
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript">
+
+    var lat = @Html.Raw(JsonConvert.SerializeObject(Model.Market.Address.Lat, Formatting.Indented,
+                      new JsonSerializerSettings
+                      {
+                          ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                      }));
+   var lng = @Html.Raw(JsonConvert.SerializeObject(Model.Market.Address.Lng, Formatting.Indented,
+                        new JsonSerializerSettings
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        }));
+
+
+    function initMap() {
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 8,
+            center: { lat, lng }
+        });
+
+        var marker = new google.maps.Marker({ position: new google.maps.LatLng(lat, lng), map: map });
+
+
+        }
+
+
+    </script>
+   
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSTcHEED_69_2WYbJxFEqt9-O4Z3Xy7oY&callback=initMap"
+            async defer></script>
+
+
+
+    <hr />

@@ -11,6 +11,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using GoodFoodMKE.Models;
+using GoodFoodMKE.Models.ViewModels;
+using GoogleMaps.LocationServices;
 
 namespace GoodFoodMKE.Controllers
 {
@@ -157,7 +159,7 @@ namespace GoodFoodMKE.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
-                 
+
                 if (result.Succeeded)
                 {
                     result = await UserManager.AddToRoleAsync(user.Id, RoleName.Member);
@@ -172,7 +174,7 @@ namespace GoodFoodMKE.Controllers
                         Id = user.Id,
                         NameFirst = model.NameFirst,
                         NameLast = model.NameLast,
-                        
+
                     };
                     using (MD5 md5Hash = MD5.Create())
                     {
@@ -181,8 +183,175 @@ namespace GoodFoodMKE.Controllers
                     }
                     _context.AppUsers.Add(appUser);
                     _context.SaveChanges();
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                    // Send an email with this link
+                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                    return RedirectToAction("Index", "Home");
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+        [AllowAnonymous]
+        public ActionResult RegisterMarket()
+        {
+            return View();
+        }
+
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterMarket(CreateMarketViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    result = await UserManager.AddToRoleAsync(user.Id, RoleName.Market);
+                }
+                if (result.Succeeded)
+                {
+
+
+                    var appUser = new AppUser()
+                    {
+                        EmailAddress = model.Email.ToString().ToLower().Trim(' '),
+                        Id = user.Id,
+                        NameFirst = model.NameFirst,
+                        NameLast = model.NameLast,
+
+                    };
+                    using (MD5 md5Hash = MD5.Create())
+                    {
+                        string hash = GetMd5Hash(md5Hash, appUser.EmailAddress);
+                        appUser.GravatarEmailHash = hash;
+                    }
+                    _context.AppUsers.Add(appUser);
+                    var address = new Address()
+                    {
+                        AddressString = model.Market.Address.AddressString
+                    };
+                    var locationService = new GoogleLocationService("AIzaSyBSTcHEED_69_2WYbJxFEqt9-O4Z3Xy7oY");
+                    var point = locationService.GetLatLongFromAddress(address.AddressString);
+
+                    address.Lat = point.Latitude;
+                    address.Lng = point.Longitude;
+
+                    _context.Addresses.Add(address);
+                    _context.SaveChanges();
+
+                    var market = new Market()
+                    {
+                        Active = false,
+                        Address = _context.Addresses.Where(m => m.AddressString == model.Market.Address.AddressString).Single(),
+                        Name = model.Market.Name,
+                        PhoneNumber = model.Market.PhoneNumber,
+                        WebAddress = model.Market.WebAddress,
+                        Requestor = appUser
+
+                    };
+                    _context.Markets.Add(market);
+                    _context.SaveChanges();
+                                      
+                   
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                    // Send an email with this link
+                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                    return RedirectToAction("Index", "Home");
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+        [AllowAnonymous]
+        public ActionResult RegisterFarm()
+        {
+            return View();
+        }
+
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterFarm(CreateFarmViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    result = await UserManager.AddToRoleAsync(user.Id, RoleName.Farm);
+                }
+                if (result.Succeeded)
+                {
+
+
+                    var appUser = new AppUser()
+                    {
+                        EmailAddress = model.Email.ToString().ToLower().Trim(' '),
+                        Id = user.Id,
+                        NameFirst = model.NameFirst,
+                        NameLast = model.NameLast,
+
+                    };
+                    using (MD5 md5Hash = MD5.Create())
+                    {
+                        string hash = GetMd5Hash(md5Hash, appUser.EmailAddress);
+                        appUser.GravatarEmailHash = hash;
+                    }
+                    _context.AppUsers.Add(appUser);
+                    var address = new Address()
+                    {
+                        AddressString = model.Farm.Address.AddressString
+                    };
+                    var locationService = new GoogleLocationService("AIzaSyBSTcHEED_69_2WYbJxFEqt9 - O4Z3Xy7oY");
+                    var point = locationService.GetLatLongFromAddress(address.AddressString);
+                   
+
+                    address.Lat = point.Latitude;
+                    address.Lng = point.Longitude;
+
+                    _context.Addresses.Add(address); 
+                    _context.SaveChanges();
+
+                    var farm = new Farm ()
+                    {
+                        Active = false,
+                        Address = _context.Addresses.Where(m => m.AddressString == model.Farm.Address.AddressString).Single(),
+                        Name = model.Farm.Name,
+                        PhoneNumber = model.Farm.PhoneNumber,
+                        WebAddress = model.Farm.WebAddress,
+                        Requestor = appUser,
+
+                    };
+                    _context.Farms.Add(farm);
+                    _context.SaveChanges();
+
+
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);

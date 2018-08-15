@@ -3,106 +3,121 @@
     ViewBag.Title = "Admin Home";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <h2>@ViewBag.Title</h2>
 
 
-@if (Model.Markets.Count > 0)
+@using (Html.BeginForm("AdminHome", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
-    <h3>New Markets to Approve</h3>
-    <div class="co-md-10">
-        <table id="markets" class="table table-bordered table-hover table-responsive">
-            <thead>
-                <tr>
-                    <th>Market Name</th>
-                    <th>Requestor Name</th>
-                    <th>Requestor Contact</th>
-                    <th>URL</th>
-                    <th>Approved?</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var market in Model.Markets)
-                {
+
+
+
+    if (Model.Markets.Count > 0)
+    {
+        <h3>New Markets to Approve</h3>
+        <div class="co-md-10">
+            <table id="markets" class="table table-bordered table-hover table-responsive">
+                <thead>
                     <tr>
-                        <td>@Html.ActionLink(market.Name, "Details", new { id = market.Id }, null)</td>
-                        <td>@market.Requestor.NameFirst  @market.Requestor.NameLast</td>
-                        <td>@market.Requestor.PhoneNumber</td>
-                        <td>@market.WebAddress</td>
-                        <td>
-                            <input type='hidden' name='market.Id' value='market.Id'>
-                            @Html.CheckBoxFor(m => market.Active, new { @checked = true })
-                        </td>
+                        <th>Market Name</th>
+                        <th>URL</th>
+                        <th>Approved?</th>
                     </tr>
-                }
+                </thead>
+                <tbody>
+                    @foreach (var market in Model.Markets)
+                    {
+                        <tr>
+                            <td>@Html.ActionLink(market.Name, "Details", new { id = market.Id }, null)</td>
+                            <td>@market.WebAddress</td>
+                            <td>
+                                @Html.ActionLink("Approve", "ApproveMarket", new { id = market.Id }, new { @class = "btn btn-default" })
+                            </td>
+                        </tr>
+                    }
 
-            </tbody>
-        </table>
-    </div>
-}
-@if (Model.Farms.Count > 0)
-{
-    <h3>New Farms to Approve</h3>
-    <div class="co-md-10">
-        <table id="farms" class="table table-bordered table-hover table-responsive">
-            <thead>
-                <tr>
-                    <th>Farm Name</th>
-                    <th>Requestor Name</th>
-                    <th>Requestor Contact</th>
-                    <th>URL</th>
-                    <th>Approved?</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var farm in Model.Farms)
-                {
+                </tbody>
+            </table>
+
+        </div>
+    }
+    if (Model.Farms.Count > 0)
+    {
+        <h3>New Farms to Approve</h3>
+        <div class="co-md-10">
+            <table id="farms" class="table table-bordered table-hover table-responsive">
+                <thead>
                     <tr>
-                        <td>@Html.ActionLink(farm.Name, "Details", new { id = farm.Id }, null)</td>
-                        <td>@farm.Requestor.NameFirst  @farm.Requestor.NameLast</td>
-                        <td>@farm.Requestor.PhoneNumber</td>
-                        <td>@farm.WebAddress</td>
-                        <td>
-                            <input type='hidden' name='market.Id' value='market.Id'>
-                            @Html.CheckBoxFor(m => farm.Active, new { @checked = true })
-                        </td>
+                        <th>Farm Name</th>
+                        <th>Requestor Name</th>
+                        <th>Requestor Contact</th>
+                        <th>URL</th>
+                        <th>Approved?</th>
                     </tr>
-                }
+                </thead>
+                <tbody>
+                    @foreach (var farm in Model.Farms)
+                    {
+                        <tr>
+                            <td>@Html.ActionLink(farm.Name, "Details", new { id = farm.Id }, null)</td>
+                            <td>@farm.PhoneNumber</td>
+                            <td>@farm.WebAddress</td>
+                            <td>
+                                @Html.ActionLink("Approve", "ApproveFarm", new { id = farm.Id }, new { @class = "btn btn-default" })
+                            </td>
+                        </tr>
+                    }
 
-            </tbody>
-        </table>
-    </div>
-}
-@if (Model.BlogEntries.Count > 0)
-{
-    <h3>New Entries to Approve</h3>
-    <div class="co-md-10">
-        <table id="entries" class="table table-bordered table-hover table-responsive">
-            <thead>
-                <tr>
-                    <th>Created Date</th>
-                    <th>Entry Title</th>
-                    <th>Writer</th>
-                    <th>View</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var entry in Model.BlogEntries)
-                {
-                <tr>
-                    <td>@entry.CreatedDate.ToLongDateString()</td>
-                    <td>@Html.ActionLink(entry.Title, "Details", new { id = entry.BlogId }, null)</td>
-                    <td>@entry.Creator.NameFirst  @entry.Creator.NameLast</td>                    
-                    <td>@Html.ActionLink("View Entry", "Details", new { id = entry.BlogId }, null)</td>
-                                      
-                </tr>
-                }
+                </tbody>
+            </table>
 
-            </tbody>
-        </table>
-    </div>
-}
-@if (Model.BlogEntries.Count == 0 || Model.Markets.Count== 0 || Model.Farms.Count == 0)
-{
-    <p>You have no pending requests</p>
+        </div>
+    }
+    if (Model.BlogEntries.Count > 0)
+    {
+        <h3>New Entries to Approve</h3>
+        <div class="co-md-10">
+            <table id="entries" class="table table-bordered table-hover table-responsive">
+                <thead>
+                    <tr>
+                        <th>Created Date</th>
+                        <th>Entry Title</th>
+                        <th>Writer</th>
+                        <th>View</th>
+                        <th>Approve?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in Model.BlogEntries)
+                    {
+                        <tr>
+                            <td>@entry.CreatedDate.ToLongDateString()</td>
+                            <td>@Html.ActionLink(entry.Title, "Details", new { id = entry.BlogId }, null)</td>
+                            <td>@entry.Creator.NameFirst  @entry.Creator.NameLast</td>
+                            <td>@Html.ActionLink("View Entry", "Details", new { id = entry.BlogId }, null)</td>
+
+                            <td>
+                                @Html.ActionLink("Approve", "ApproveBlog", new { id = entry.BlogId }, new { @class = "btn btn-default" })
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+
+    }
+
+
+    if (Model.BlogEntries.Count == 0 && Model.Markets.Count == 0 && Model.Farms.Count == 0)
+    {
+        <p>You have no pending requests.</p>
+    }
+    else if (Model.BlogEntries.Count == 0 || Model.Markets.Count == 0 || Model.Farms.Count == 0)
+    {
+        <p>You have no other pending requests</p>
+
+    }
+
 }
